@@ -11,7 +11,7 @@ router.post("/refreshToken", verifyRefreshToken, async (req, res, next) => {
             company_code: res.locals.company_code,
         },
         jwtSecret,
-        { expiresIn: "5m" }
+        { expiresIn: "5s" }
     );
     const result = await user.findByUserId(res.locals.user_id);
     console.log(result)

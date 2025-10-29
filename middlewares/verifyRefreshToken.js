@@ -6,9 +6,7 @@ dotenv.config();
 const verifyRefreshToken = (req, res, next) => {
     console.log("aaa")
     console.log("aaa")
-    console.log("aaa")
-    console.log("aaa")
-    console.log("aaa")
+    console.log("req.headers.authorization", req.headers.authorization)
 
     if (!req.headers.authorization) {
         return res.status(401).json({ message: "토큰이 없습니다." });

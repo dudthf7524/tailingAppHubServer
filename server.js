@@ -348,7 +348,22 @@ app.post("/ingest", handleIngest);
 //     res.send("ok")
 // })
 
-
+app.post("/sum", async (req, res) => {
+    console.log("req.body", req.body);
+    const now = new Date();
+    const today = now.toLocaleString("ko-KR", {
+        timeZone: "Asia/Seoul",
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    }) + "." + now.getMilliseconds().toString().padStart(3, "0");
+    console.log("today", today);
+    res.send("ok");
+})
 
 // ---------- 기타 라우트(파일/디바이스) ----------
 app.get("/files", async (req, res) => {
