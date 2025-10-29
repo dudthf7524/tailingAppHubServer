@@ -349,7 +349,7 @@ app.post("/ingest", handleIngest);
 // })
 
 app.post("/sum", async (req, res) => {
-    console.log("req.body", req.body);
+    console.log("req.body", req.body.length);
     const now = new Date();
     const today = now.toLocaleString("ko-KR", {
         timeZone: "Asia/Seoul",
