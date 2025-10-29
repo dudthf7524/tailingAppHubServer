@@ -10,9 +10,10 @@ const sequelize = new Sequelize(
   config
 );
 
-db.MacAddress = require("./macAddress")(sequelize, Sequelize);
-db.Organization = require("./organization")(sequelize, Sequelize);
+db.Device = require("./device")(sequelize, Sequelize);
+db.User = require("./user")(sequelize, Sequelize);
 db.Hub = require("./hub")(sequelize, Sequelize);
+db.Pet = require("./pet")(sequelize, Sequelize);
 
 
 Object.keys(db).forEach((modelName) => {

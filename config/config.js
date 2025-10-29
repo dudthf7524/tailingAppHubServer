@@ -14,7 +14,7 @@ module.exports = {
   test: {
     username: "root",
     password: "zmfladhvm",
-    database: "tailingHubDB",
+    database: "tailingDB",
     host: "127.0.0.1",
     dialect: "mysql",
     timezone: "+09:00",
@@ -22,7 +22,7 @@ module.exports = {
   production: {
     username: "root",
     password: "zmfladhvm",
-    database: "tailingHubDB",
+    database: "tailingDB",
     host: "127.0.0.1",
     dialect: "mysql",
     timezone: "+09:00",

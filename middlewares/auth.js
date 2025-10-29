@@ -48,22 +48,7 @@ const isLoggedIn = async (req, res, next) => {
     }
 };
 
-// 비로그인 상태 확인 미들웨어
-const isNotLoggedIn = (req, res, next) => {
-    try {
-        const token = req.headers.authorization?.split(' ')[1] || req.body.device_code;
-        
-        if (token) {
-            return res.status(400).json({ message: '이미 로그인되어 있습니다.' });
-        }
-        
-        next();
-    } catch (error) {
-        next(error);
-    }
-};
-
 module.exports = {
     isLoggedIn,
-    isNotLoggedIn
+    
 }; 

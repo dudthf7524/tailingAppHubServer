@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-    const Hub = sequelize.define(
-        "Hub",
+    const Device = sequelize.define(
+        "Device",
         {
             id: {
                 type: DataTypes.INTEGER,
@@ -11,26 +11,30 @@ module.exports = (sequelize, DataTypes) => {
             address: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                primaryKey: true, // PK 설정
+                unique: true, // 유니크 설정
             },
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            user_id: {
+            hub_id: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            pet_id: {
+                type: DataTypes.STRING,
+                allowNull: true
+            }
         },
         {
             charset: "utf8mb4",
             collate: "utf8mb4_bin",
         }
     );
-    Hub.associate = (db) => {
-        db.Hub.belongsTo(db.User, { foreignKey: "id" });
-        db.Hub.hasOne(db.Device, { foreignKey: "hub_id" });
+    Device.associate = (db) => {
+        db.Device.belongsTo(db.Hub, { foreignKey: "hub_id" });
+        db.Device.belongsTo(db.Pet, { foreignKey: "pet_id" });
     };
 
-    return Hub;
+    return Device;
 };
