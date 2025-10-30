@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
-const jwtSecret = "T@iling_Pr0ject_2024_S3cur3_K3y_!@^&*";
 const dotenv = require("dotenv");
 dotenv.config();
+const jwtSecret = process.env.JWT_SECRET;
 
 const verifyRefreshToken = (req, res, next) => {
     console.log("aaa")
@@ -11,16 +11,14 @@ const verifyRefreshToken = (req, res, next) => {
     if (!req.headers.authorization) {
         return res.status(401).json({ message: "토큰이 없습니다." });
     }
-    console.log("aaa")
     try {
         const data = jwt.verify(
             req.headers.authorization,
             jwtSecret
         );
         console.log(data)
-        res.locals.user_code = data.user_code;
-        res.locals.user_id = data.user_id;
-        res.locals.company_code = data.company_code;
+        res.locals.id = data.id;
+        res.locals.email = data.email;
     } catch (error) {
         console.error(error);
         if (error.name === "TokenExpiredError") {

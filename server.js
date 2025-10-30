@@ -13,6 +13,7 @@ const hubController = require("./controller/hub.js");
 const deviceController = require("./controller/device.js");
 const petController = require("./controller/pet.js");
 const authController = require("./controller/auth.js");
+const checkController = require("./controller/check.js");
 
 const app = express();
 const port = Number(process.env.PORT || 3080);
@@ -323,30 +324,31 @@ async function handleIngest(req, res) {
 app.post("/", handleIngest);
 app.post("/ingest", handleIngest);
 
-// app.post("/hub", async (req, res) => {
-//     console.log("req.body : ", req.body);
-//     console.log("req.body : ", req.body);
-//     console.log("req.body : ", req.body);
-//     console.log("req.body : ", req.body);
-//     console.log("req.body : ", req.body);
-// })
+app.post("/hub", async (req, res) => {
+    console.log("req.body : ", req.body);
+    console.log("req.body : ", req.body);
+    console.log("req.body : ", req.body);
+    console.log("req.body : ", req.body);
+    console.log("req.body : ", req.body);
+});
 
-// app.post("/external", async (req, res) => {
-//     console.log("req.body : ", req.body);
-//     const now = new Date();
-//     const today = now.toLocaleString("ko-KR", {
-//         timeZone: "Asia/Seoul",
-//         year: 'numeric',
-//         month: '2-digit',
-//         day: '2-digit',
-//         hour: '2-digit',
-//         minute: '2-digit',
-//         second: '2-digit',
-//         hour12: false
-//     }) + "." + now.getMilliseconds().toString().padStart(3, "0");
-//     console.log("today", today)
-//     res.send("ok")
-// })
+app.post("/external", async (req, res) => {
+    console.log("req.body : ", req.body.data);
+
+    const now = new Date();
+    const today = now.toLocaleString("ko-KR", {
+        timeZone: "Asia/Seoul",
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    }) + "." + now.getMilliseconds().toString().padStart(3, "0");
+    console.log("today", today)
+    res.send("ok")
+});
 
 app.post("/sum", async (req, res) => {
     console.log("req.body", req.body.length);
@@ -477,7 +479,7 @@ app.use("/hub", hubController);
 app.use("/device", deviceController);
 app.use("/pet", petController);
 app.use("/auth", authController);
-
+app.use("/check", checkController);
 
 // ---------- Start (single listen) ----------
 server.listen(port, () => {

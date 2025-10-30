@@ -1,6 +1,6 @@
 const express = require("express");
-const bcrypt = require("bcrypt");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 const email = require('../common/email');
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");
@@ -16,42 +16,20 @@ router.post("/join", async (req, res, next) => {
   try {
     const {
       email,
-      password,
-      name,
-      address,
-      phone,
-      // marketingAgreed,
-      // smsAgreed,
-      // emailAgreed,
-      // pushAgreed,
     } = req.body;
     const exUser = await User.findOne({ where: { email } });
     if (exUser) {
       return res.status(400).json({ message: "이미 가입된 아이디입니다." });
     }
-
-    const hashedPassword = await bcrypt.hash(password, 12);
-
-    const user = await User.create({
-      email,
-      password: hashedPassword,
-      name,
-      address,
-      phone,
-      // agree_marketing: marketingAgreed || 0,
-      // agree_sms: smsAgreed || 0,
-      // agree_email: emailAgreed || 0,
-      // agree_push: pushAgreed || 0,
-      // max_device_cnt: 5,
-      // current_device_cnt: 0,
-    });
+    const body = req.body;
+    const result = await user.userJoin(body);
 
     res.status(201).json({
       message: "회원가입이 완료되었습니다.",
       data: {
         user: {
-          email: user.email,
-          name: user.name,
+          email: result.email,
+          name: result.name,
         },
       },
     });
@@ -63,9 +41,10 @@ router.post("/join", async (req, res, next) => {
 
 
 router.post("/email/send", async (req, res, next) => {
+  const {email, emailCode} = req.body;
+  console.log("회원가입할 이메일 : ", email);
+  console.log("회원가입할 이메일을 인증하는 코드 : ", emailCode);
 
-  const user_id = req.body.email;
-  const email_verification_number = req.body.code;
 
   // try {
   //     const result = await user.findByEmail(user_id);
@@ -81,13 +60,13 @@ router.post("/email/send", async (req, res, next) => {
   //     console.error(error)
   // }
 
-  try {
-    const result = await email.sendEmail(user_id, email_verification_number)
-    console.log("result", result)
-    res.json(true);
-  } catch (error) {
-    console.error(error)
-  }
+  // try {
+  //   const result = await email.sendEmail(user_id, email_verification_number)
+  //   console.log("result", result)
+  //   res.json(true);
+  // } catch (error) {
+  //   console.error(error)
+  // }
 });
 
 // router.post("/join", async (req, res) => {
@@ -115,7 +94,7 @@ router.post("/login", async (req, res, next) => {
         email: exUser.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "10s" }
+      { expiresIn: "5m" }
     );
 
     const refreshToken = jwt.sign(
@@ -125,7 +104,7 @@ router.post("/login", async (req, res, next) => {
         email: exUser.email
       },
       process.env.JWT_SECRET,
-      { expiresIn: "10s" }
+      { expiresIn: "24h" }
     );
 
     res.status(200).json({

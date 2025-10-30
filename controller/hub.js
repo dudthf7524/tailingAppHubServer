@@ -4,10 +4,9 @@ const router = express.Router();
 const jwtSecret = "T@iling_Pr0ject_2024_S3cur3_K3y_!@^&*";
 const jwt = require("jsonwebtoken");
 const verifyToken = require('../middlewares/verifyToken');
-const { where } = require("sequelize");
 
 router.post("/register", async (req, res, next) => {
-    console.log("req.body", req.body)
+    console.log("req.body", req.body);
     const hub_address = req.body.mac_address;
     const org_email = req.body.org_email;
 

@@ -26,43 +26,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       phone: {
-        type: DataTypes.STRING(15),
+        type: DataTypes.STRING(20),
         allowNull: false,
       },
-      // agree_marketing: {
-      //   type: DataTypes.BOOLEAN,
-      //   allowNull: false,
-      // },
-      // agree_sms: {
-      //   type: DataTypes.BOOLEAN,
-      //   allowNull: false,
-      // },
-      // agree_email: {
-      //   type: DataTypes.BOOLEAN,
-      //   allowNull: false,
-      // },
-      // agree_push: {
-      //   type: DataTypes.BOOLEAN,
-      //   allowNull: false,
-      // },
-      // max_device_cnt: {
-      //   type: DataTypes.INTEGER,
-      //   allowNull: false,
-      //   default: 5
-      // },
-      // current_device_cnt: {
-      //   type: DataTypes.INTEGER,
-      //   allowNull: false,
-      //   default: 0
-      // },
-      // isActive: {
-      //   type: DataTypes.BOOLEAN,
-      //   allowNull: true,
-      // },
-      // deletedAt: {
-      //   type: DataTypes.DATE,
-      //   allowNull: true,
-      // },
     },
     {
       charset: "utf8mb4",
