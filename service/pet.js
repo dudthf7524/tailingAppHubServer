@@ -1,7 +1,7 @@
 const { Pet } = require("../models");
 
 
-const petRegister = async (user_id, body) => {
+const petRegister = async (email, body) => {
     const {
         name,
         species,
@@ -30,7 +30,7 @@ const petRegister = async (user_id, body) => {
             veterinarian,
             diagnosis,
             medicalHistory,
-            user_id
+            user_email : email
         });
         return result.id;
     } catch (error) {
@@ -38,8 +38,15 @@ const petRegister = async (user_id, body) => {
     }
 };
 
-const petList = async () => {
-
+const petList = async (email) => {
+    try {
+        const result = await Pet.findAll({
+            where: { user_email: email }
+        })
+        return result
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 const petDetail = async (petId) => {
@@ -54,6 +61,7 @@ const petDetail = async (petId) => {
 }
 
 module.exports = {
+    petList,
     petRegister,
     petDetail
 };

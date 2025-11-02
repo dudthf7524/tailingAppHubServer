@@ -1,13 +1,22 @@
 module.exports = (sequelize, DataTypes) => {
-    const Hub = sequelize.define(
-        "Hub",
+    const Csv = sequelize.define(
+        "Csv",
         {
-            address: {
+            id: {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                autoIncrement: true,
+                allowNull: false,
+            },
+            file_name: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                primaryKey: true, // PK 설정
             },
-            name: {
+            pet_id: {
+                type: DataTypes.STRING,
+                allowNull: false,
+            },
+            device_address: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
@@ -15,10 +24,6 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            is_change: {
-                type: DataTypes.BOOLEAN,
-                allowNull: false,
-            }
         },
         {
             charset: "utf8mb4",
@@ -30,5 +35,5 @@ module.exports = (sequelize, DataTypes) => {
         db.Hub.hasMany(db.Device, { foreignKey: "hub_address" });
     };
 
-    return Hub;
+    return Csv;
 };

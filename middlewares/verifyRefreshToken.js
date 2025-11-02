@@ -17,7 +17,6 @@ const verifyRefreshToken = (req, res, next) => {
             jwtSecret
         );
         console.log(data)
-        res.locals.id = data.id;
         res.locals.email = data.email;
     } catch (error) {
         console.error(error);

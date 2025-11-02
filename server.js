@@ -14,6 +14,7 @@ const deviceController = require("./controller/device.js");
 const petController = require("./controller/pet.js");
 const authController = require("./controller/auth.js");
 const checkController = require("./controller/check.js");
+const externalController = require("./controller/external.js");
 
 const app = express();
 const port = Number(process.env.PORT || 3080);
@@ -92,11 +93,13 @@ function flushAll() {
 const server = createServer(app);
 const wss = new WebSocketServer({ server, path: WS_PATH });
 const clients = new Set();
+const { addClient, removeClient } = require("./websocket/broadcaster");
 
 wss.on("connection", (ws, req) => {
     const ip = req.socket.remoteAddress;
     console.log("🔌 WS client connected:", ip);
     clients.add(ws);
+    addClient(ws); // broadcaster에 클라이언트 추가
 
     ws.send(JSON.stringify({ type: "welcome", message: "connected to telemetry WS" }));
 
@@ -113,11 +116,13 @@ wss.on("connection", (ws, req) => {
     ws.on("close", () => {
         console.log("🔌 WS client disconnected:", ip);
         clients.delete(ws);
+        removeClient(ws); // broadcaster에서 클라이언트 제거
     });
 
     ws.on("error", (err) => {
         console.error("WS error:", err?.message);
         clients.delete(ws);
+        removeClient(ws); // broadcaster에서 클라이언트 제거
     });
 });
 
@@ -324,14 +329,6 @@ async function handleIngest(req, res) {
 app.post("/", handleIngest);
 app.post("/ingest", handleIngest);
 
-app.post("/hub", async (req, res) => {
-    console.log("req.body : ", req.body);
-    console.log("req.body : ", req.body);
-    console.log("req.body : ", req.body);
-    console.log("req.body : ", req.body);
-    console.log("req.body : ", req.body);
-});
-
 app.post("/external", async (req, res) => {
     console.log("req.body : ", req.body.data);
 
@@ -480,6 +477,7 @@ app.use("/device", deviceController);
 app.use("/pet", petController);
 app.use("/auth", authController);
 app.use("/check", checkController);
+app.use("/external", externalController);
 
 // ---------- Start (single listen) ----------
 server.listen(port, () => {

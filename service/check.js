@@ -1,22 +1,23 @@
 const { User, Hub } = require("../models");
 
-
-const checkUser = async (email) => {
+const hubRegister = async (hubAddress, email) => {
     try {
-        const result = await User.findOne({
-            where: { email }
+        const result = await Hub.create({
+            address: hubAddress,
+            user_email: email,
+            name: 'HUB',
+            is_change: false,
         });
-        return result.id;
+        return result;
     } catch (error) {
         console.error(error);
     }
 };
 
-const checkHub = async (user_id, hub_address) => {
+const checkHub = async (hub_address) => {
     try {
         const result = await Hub.findOne({
             where: {
-                user_id,
                 address: hub_address
             },
         });
@@ -27,6 +28,6 @@ const checkHub = async (user_id, hub_address) => {
 };
 
 module.exports = {
-    checkUser,
+    hubRegister,
     checkHub
 };

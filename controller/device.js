@@ -47,10 +47,9 @@ router.post("/connect/pet", async (req, res) => {
 
 router.get("/connect/pet/list", verifyToken, async (req, res) => {
 
-    const id = res.locals.id;
-    console.log("id", id);
+    const email = res.locals.email;
     try {
-        const result = await deviceConnectPetList(id);
+        const result = await deviceConnectPetList(email);
        res.status(200).json({
         data : result,
        })

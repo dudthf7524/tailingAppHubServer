@@ -9,7 +9,6 @@ const transporter = nodemailer.createTransport({
 });
 
 async function sendEmail(user_id, email_verification_number) {
-    console.log(user_id, email_verification_number)
     try {
         await transporter.sendMail({
             from: 'creamoff2021@naver.com',
@@ -17,7 +16,6 @@ async function sendEmail(user_id, email_verification_number) {
             subject: '이메일 인증',
             text: `인증 번호는 ${email_verification_number} 입니다.`,
         });
-
         return true;
     } catch (error) {
         console.error('이메일 발송 실패:', error);

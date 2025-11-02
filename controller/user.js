@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-const email = require('../common/email');
+const commonEmail = require('../common/email');
 const { User } = require("../models");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
@@ -42,31 +42,13 @@ router.post("/join", async (req, res, next) => {
 
 router.post("/email/send", async (req, res, next) => {
   const {email, emailCode} = req.body;
-  console.log("회원가입할 이메일 : ", email);
-  console.log("회원가입할 이메일을 인증하는 코드 : ", emailCode);
-
-
-  // try {
-  //     const result = await user.findByEmail(user_id);
-  //     if (result) {
-  //         res.json("-1");
-  //     } else {
-  //         const result = await email.sendEmail(user_id, email_verification_number)
-  //         console.log(result);
-  //         res.json(true);
-  //     }
-
-  // } catch (error) {
-  //     console.error(error)
-  // }
-
-  // try {
-  //   const result = await email.sendEmail(user_id, email_verification_number)
-  //   console.log("result", result)
-  //   res.json(true);
-  // } catch (error) {
-  //   console.error(error)
-  // }
+  try {
+    const result = await commonEmail.sendEmail(email, emailCode)
+    console.log("result", result)
+    res.json(true);
+  } catch (error) {
+    console.error(error)
+  }
 });
 
 // router.post("/join", async (req, res) => {
@@ -90,7 +72,6 @@ router.post("/login", async (req, res, next) => {
     const accessToken = jwt.sign(
       {
         sub: "access",
-        id: exUser.id,
         email: exUser.email,
       },
       process.env.JWT_SECRET,
@@ -100,7 +81,6 @@ router.post("/login", async (req, res, next) => {
     const refreshToken = jwt.sign(
       {
         sub: "refresh",
-        id: exUser.id,
         email: exUser.email
       },
       process.env.JWT_SECRET,
@@ -109,7 +89,6 @@ router.post("/login", async (req, res, next) => {
 
     res.status(200).json({
       data: {
-        id: exUser.id,
         email: exUser.email,
         accessToken,
         refreshToken

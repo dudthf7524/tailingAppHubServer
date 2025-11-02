@@ -1,0 +1,111 @@
+const express = require("express");
+const router = express.Router();
+const path = require("path");
+const fs = require("fs");
+const { broadcastDeviceData } = require("../websocket/broadcaster");
+
+router.post("/device", async (req, res) => {
+    // console.log("디바이스 데이터 : ", req.body);
+    const now = new Date();
+    const today = now.toLocaleString("ko-KR", {
+        timeZone: "Asia/Seoul",
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: false
+    }) + "." + now.getMilliseconds().toString().padStart(3, "0");
+    // console.log("통신시간 : ", today)
+
+    // 디바이스 데이터 파싱 및 CSV 저장
+    try {
+        // 데이터 폴더 확인 및 생성
+        const dataDir = path.join(__dirname, "..", "data");
+        if (!fs.existsSync(dataDir)) {
+            fs.mkdirSync(dataDir, { recursive: true });
+        }
+
+        // 단일 디바이스 또는 여러 디바이스 처리
+        let devicesArray = [];
+
+        if (req.body.devices && Array.isArray(req.body.devices)) {
+            // 여러 디바이스
+            devicesArray = req.body.devices;
+        } else if (req.body.deviceAddress && req.body.deviceData) {
+            // 단일 디바이스
+            devicesArray = [{
+                deviceAddress: req.body.deviceAddress,
+                deviceData: req.body.deviceData
+            }];
+        } else {
+            return res.status(400).send("잘못된 데이터 형식");
+        }
+
+        const fileDate = now.toLocaleString("ko-KR", {
+            timeZone: "Asia/Seoul",
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour12: false
+        }).replace(/\. /g, '-').replace(/\./g, '');
+
+        // CSV 파일 저장 시작 시간
+        const saveStartTime = Date.now();
+
+        // 각 디바이스별로 CSV 저장
+        const devicesData = [];
+        for (const device of devicesArray) {
+            const { deviceAddress, deviceData } = device;
+
+            // 파일명 생성 (디바이스주소_날짜.csv)
+            const deviceName = deviceAddress.replace(/:/g, '-');
+            const fileName = `${deviceName}_${fileDate}.csv`;
+            const filePath = path.join(dataDir, fileName);
+
+            // 파일이 존재하는지 확인
+            const fileExists = fs.existsSync(filePath);
+
+            // CSV 데이터 생성
+            let csvContent = "";
+
+            // 파일이 없으면 헤더 추가
+            if (!fileExists) {
+                csvContent += "timestamp,ir,red,green,spo2,hr,temp,battery\n";
+            }
+
+            // 데이터 추가
+            csvContent += deviceData.map(row => row).join("\n") + "\n";
+
+            // CSV 파일에 데이터 추가 (append mode)
+            fs.appendFileSync(filePath, csvContent, 'utf8');
+
+            // 웹소켓 전송을 위한 데이터 수집
+            devicesData.push({
+                deviceAddress,
+                deviceData
+            });
+        }
+
+        // CSV 파일 저장 종료 시간
+        const saveEndTime = Date.now();
+        const saveTime = saveEndTime - saveStartTime;
+
+        // 웹소켓으로 모든 디바이스 데이터 브로드캐스트
+        const wsStats = broadcastDeviceData(devicesData);
+
+        // console.log(`데이터가 저장되었습니다: ${devicesArray.length}개 디바이스`);
+        // console.log("처리시간 : ", today)
+        // console.log(`디바이스 수: ${devicesArray.length}개`)
+        // console.log(`CSV 저장 시간: ${saveTime}ms`)
+        // console.log(`WebSocket 전송: success=${wsStats.success}, fail=${wsStats.fail}, total=${wsStats.total}`)
+        res.send("ok");
+    } catch (error) {
+        console.error("CSV 저장 중 오류:", error);
+        res.status(500).send("데이터 저장 실패");
+    }
+});
+
+module.exports = router;
+

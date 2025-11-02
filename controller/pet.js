@@ -7,29 +7,21 @@ const { petDetail } = require('../service/pet');
 
 
 router.get("/list", verifyToken, async (req, res) => {
-    console.log("req.params", req.params);
-    const id = res.locals.id;
-    console.log("id", id)
-    console.log("req.body", req.body);
+    const email = res.locals.email;
     try {
-        const result = await Pet.findAll({
-           where: { user_id: id }
+        const result = await pet.petList(email);
+        res.status(200).json({
+            data: result
         })
-        return res.status(200).json({
-            data: result,
-        });
     } catch (error) {
         console.error(error);
     }
 });
 
 router.post("/register", verifyToken, async (req, res) => {
-    const id = res.locals.id;
-    console.log("id", id)
-    console.log("req.body", req.body);
-
+    const email = res.locals.email;
     try {
-        const result = pet.petRegister(id, req.body);
+        const result = pet.petRegister(email, req.body);
         if (result) {
             res.status(200).json({
                 message: "등록되었습니다",

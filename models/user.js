@@ -1,17 +1,11 @@
 module.exports = (sequelize, DataTypes) => {
-  const Organization = sequelize.define(
+  const User = sequelize.define(
     "User",
     {
-      id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
-        allowNull: false,
-      },
       email: {
-        type: DataTypes.STRING,
-        allowNull: false,
+        type: DataTypes.STRING(100),
         primaryKey: true,
+        allowNull: false,
       },
       password: {
         type: DataTypes.STRING(100),
@@ -35,11 +29,12 @@ module.exports = (sequelize, DataTypes) => {
       collate: "utf8mb4_bin",
     }
   );
-  Organization.associate = (db) => {
-    db.User.hasOne(db.Hub, { foreignKey: "user_id" });
-    db.User.hasMany(db.Pet, { foreignKey: "user_id" });
+  User.associate = (db) => {
+    db.User.hasMany(db.Hub, { foreignKey: "user_email" });
+    db.User.hasMany(db.Pet, { foreignKey: "user_email" });
+    db.User.hasMany(db.Device, { foreignKey: "user_email" });
   };
-  return Organization;
+  return User;
 }
 
 

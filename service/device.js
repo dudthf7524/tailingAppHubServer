@@ -4,13 +4,14 @@ const deviceRegister = async (body) => {
     const {
         name,
         address,
-        hubId
+        hubAddress
     } = body;
+    console.log(name, address, hubAddress)
     try {
         const result = await Device.create({
             name,
             address,
-            hub_id: hubId
+            hub_address: hubAddress
         });
         return result.id;
     } catch (error) {
@@ -21,24 +22,24 @@ const deviceRegister = async (body) => {
 const deviceConnectPet = async (body) => {
     console.log(body);
     const {
-        deviceId,
+        deviceAddress,
         petId,
     } = body;
+    console.log(deviceAddress, petId)
     try {
         await Device.update(
             { pet_id: petId },
-            { where: { id: deviceId } }
+            { where: { address: deviceAddress } }
         );
     } catch (error) {
         console.error(error);
     }
 }
 
-const deviceConnectPetList = async (user_id) => {
+const deviceConnectPetList = async (email) => {
     try {
         const result = await Device.findAll({
             attributes: [
-                ['id', 'device_id'],
                 'address',
                 ['name', 'device_name']
             ],
@@ -51,7 +52,7 @@ const deviceConnectPetList = async (user_id) => {
                 ],
                 required: true,
                 where: {
-                    user_id  // Pet 테이블의 user_id로 필터링
+                    user_email: email  // Pet 테이블의 user_id로 필터링
                 }
             }],
 

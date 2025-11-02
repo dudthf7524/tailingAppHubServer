@@ -2,22 +2,16 @@ module.exports = (sequelize, DataTypes) => {
     const Device = sequelize.define(
         "Device",
         {
-            id: {
-                type: DataTypes.INTEGER,
-                primaryKey: true,
-                autoIncrement: true,
-                allowNull: false,
-            },
             address: {
                 type: DataTypes.STRING,
                 allowNull: false,
-                unique: true, // 유니크 설정
+               primaryKey: true,
             },
             name: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            hub_id: {
+            hub_address: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
@@ -32,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     );
     Device.associate = (db) => {
-        db.Device.belongsTo(db.Hub, { foreignKey: "hub_id" });
+        db.Device.belongsTo(db.Hub, { foreignKey: "hub_address" });
         db.Device.belongsTo(db.Pet, { foreignKey: "pet_id" });
     };
 

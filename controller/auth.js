@@ -3,26 +3,23 @@ const verifyRefreshToken = require('../middlewares/verifyRefreshToken');
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const jwtSecret = process.env.JWT_SECRET;
-const { findByUserId } = require('../service/user')
+const user = require('../service/user')
 
 router.post("/refreshToken", verifyRefreshToken, async (req, res, next) => {
     const accessToken = jwt.sign(
         {
             sub: "access",
-            id: res.locals.id,
             email: res.locals.email,
         },
         jwtSecret,
         { expiresIn: "5s" }
     );
-    const result = await findByUserId(res.locals.id);
+    const result = await user.findByUserEmail(res.locals.email);
     console.log(result)
     if (result) {
-        const id = result.id
         const email = result.email
         return res.json({
             data: {
-                id,
                 email,
                 accessToken,
             },

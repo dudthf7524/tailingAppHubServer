@@ -1,12 +1,10 @@
 const { Hub } = require("../models");
 
-const hubRegister = async (hubAddress, userId) => {
+const hubList = async (email) => {
     try {
-        const result = await Hub.create({
-            address: hubAddress,
-            user_id : userId,
-            name: 'HUB'
-        });
+        const result = await Hub.findAll({
+            where: { user_email: email }
+        })
         return result;
     } catch (error) {
         console.error(error);
@@ -14,5 +12,5 @@ const hubRegister = async (hubAddress, userId) => {
 };
 
 module.exports = {
-    hubRegister,
+    hubList,
 };

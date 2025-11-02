@@ -53,9 +53,9 @@ const userChangePassword = async (user_id, password) => {
     }
 };
 
-const findByUserId = async (user_id) => {
+const findByUserEmail = async (email) => {
     try {
-        const result = await User.findOne({ where: { id: user_id }, raw: true });
+        const result = await User.findOne({ where: { email }, raw: true });
         return result
     } catch (error) {
         console.error(error);
@@ -67,5 +67,5 @@ module.exports = {
     userLogin,
     userInformation,
     userChangePassword,
-    findByUserId,
+    findByUserEmail,
 };

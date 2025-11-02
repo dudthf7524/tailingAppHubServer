@@ -14,7 +14,6 @@ const verifyToken = (req, res, next) => {
             req.headers.authorization,
             jwtSecret,
         );
-        res.locals.id = data.id;
         res.locals.email = data.email;
     } catch (error) {
         if (error.name === "TokenExpiredError") {
