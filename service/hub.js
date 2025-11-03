@@ -11,6 +11,28 @@ const hubList = async (email) => {
     }
 };
 
+const hubEdit = async (body) => {
+    console.log("body", body);
+
+    const {
+        address,
+        name
+    } = body;
+
+    try {
+        const result = await Hub.update(
+            {
+                name
+            },
+            { where: { address } }
+        );
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 module.exports = {
     hubList,
+    hubEdit
 };

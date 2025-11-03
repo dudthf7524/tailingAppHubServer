@@ -4,10 +4,7 @@ const verifyToken = require('../middlewares/verifyToken');
 const hub = require("../service/hub");
 
 router.get("/list", verifyToken, async (req, res, next) => {
-    console.log("req.params", req.params);
     const email = res.locals.email;
-
-    console.log("유저 고유 값 : ", email)
     try {
         const result = await hub.hubList(email);
         return res.status(200).json({
@@ -15,6 +12,21 @@ router.get("/list", verifyToken, async (req, res, next) => {
         });
     } catch (error) {
         console.error(error);
+    }
+});
+
+router.post("/edit", verifyToken, async (req, res, next) => {
+   
+    console.log("req.body", req.body)
+    const body = req.body;
+    try {
+        await hub.hubEdit(body);
+
+        return res.status(200).json({
+            message: "허브 이름이 변경되었습니다."
+        });
+    } catch (error) {
+        console.error(error)
     }
 });
 

@@ -3,7 +3,6 @@ const { Pet } = require("../models");
 const router = express.Router();
 const verifyToken = require('../middlewares/verifyToken');
 const pet = require('../service/pet');
-const { petDetail } = require('../service/pet');
 
 
 router.get("/list", verifyToken, async (req, res) => {
@@ -36,7 +35,7 @@ router.get("/detail", async (req, res) => {
     const petId = req.query.id;
     console.log(petId)
     try {
-        const result = await petDetail(petId)
+        const result = await pet.petDetail(petId)
         console.log(result)
         if (result) {
             res.status(200).json({
@@ -44,6 +43,30 @@ router.get("/detail", async (req, res) => {
             })
         }
     } catch (error) {
+        console.error(error);
+    }
+})
+
+router.post("/edit", async (req,res) => {
+    const body = req.body;
+    try{
+        const result = await pet.petEdit(body);
+        if(result){
+            res.status(200).json({
+                message:"환자 수정이 완료되었습니다."
+            })
+        }
+    }catch(error){
+        console.error(error);
+    }
+})
+
+router.post("/delete", async (req,res) =>{
+    console.log("req.body", req.body);
+    const petId = req.body.id;
+    try{
+        const result = await pet.petDelete(petId);
+    }catch(error){
         console.error(error);
     }
 })

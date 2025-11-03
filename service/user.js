@@ -4,9 +4,11 @@ const bcrypt = require("bcrypt");
 const userJoin = async (body) => {
     const {
         email,
+        zipCode,
         password,
         name,
-        address,
+        baseAddress,
+        detailAddress,
         phone,
     } = body;
     try {
@@ -15,8 +17,10 @@ const userJoin = async (body) => {
         const result = await User.create({
             email,
             password: hashedPassword,
+            postcode: zipCode,
             name,
-            address,
+            address : baseAddress,
+            detail_address : detailAddress,
             phone,
         });
         return result
@@ -34,20 +38,26 @@ const userLogin = async (email) => {
         console.error(error);
     }
 };
-const userInformation = async (user_id) => {
+const userInformation = async (email) => {
     try {
-        const userInfo = await User.findOne({ where: { id: user_id } });
-        console.log("userInfo", userInfo);
+        const userInfo = await User.findOne({ where: { email } });
         return userInfo;
     } catch (error) {
         console.error(error);
     }
 };
 
-const userChangePassword = async (user_id, password) => {
-    try {
+const userChangePassword = async (email, newPassword) => {
+    const hashedPassword = await bcrypt.hash(newPassword, 12);
 
-        return userInfo;
+    try {
+        const result = await User.update(
+            {
+                password : hashedPassword
+            },
+            { where: { email } }
+        );
+        return result;
     } catch (error) {
         console.error(error);
     }
@@ -62,9 +72,38 @@ const findByUserEmail = async (email) => {
     }
 };
 
+const userEdit = async (email, body) => {
+    console.log("body", body);
+
+    const {
+        name,
+        postcode,
+        address,
+        detail_address,
+        phone,
+    } = body;
+
+    try {
+        const result = await User.update(
+            {
+                name,
+                postcode,
+                address,
+                detail_address,
+                phone,
+            },
+            { where: { email } }
+        );
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 module.exports = {
     userJoin,
     userLogin,
+    userEdit,
     userInformation,
     userChangePassword,
     findByUserEmail,

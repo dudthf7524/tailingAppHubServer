@@ -15,7 +15,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(50),
         allowNull: false,
       },
+      postcode: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+      },
       address: {
+        type: DataTypes.STRING(100),
+        allowNull: false,
+      },
+      detail_address: {
         type: DataTypes.STRING(100),
         allowNull: false,
       },
@@ -32,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
   User.associate = (db) => {
     db.User.hasMany(db.Hub, { foreignKey: "user_email" });
     db.User.hasMany(db.Pet, { foreignKey: "user_email" });
-    db.User.hasMany(db.Device, { foreignKey: "user_email" });
+    // db.User.hasMany(db.Device, { foreignKey: "user_email" });
   };
   return User;
 }

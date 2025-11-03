@@ -7,7 +7,6 @@ const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const user = require('../service/user');
 const verifyToken = require('../middlewares/verifyToken');
-const { userInformation } = require("../service/user");
 
 dotenv.config();
 
@@ -41,7 +40,7 @@ router.post("/join", async (req, res, next) => {
 
 
 router.post("/email/send", async (req, res, next) => {
-  const {email, emailCode} = req.body;
+  const { email, emailCode } = req.body;
   try {
     const result = await commonEmail.sendEmail(email, emailCode)
     console.log("result", result)
@@ -75,7 +74,7 @@ router.post("/login", async (req, res, next) => {
         email: exUser.email,
       },
       process.env.JWT_SECRET,
-      { expiresIn: "5m" }
+      { expiresIn: "24h" }
     );
 
     const refreshToken = jwt.sign(
@@ -102,22 +101,59 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.get("/information", verifyToken, async (req, res, next) => {
-  const id = res.locals.id;
-  console.log("id", id);
+  const email = res.locals.email;
   try {
-    userInformation(id);
+    const result = await user.userInformation(email);
+    res.status(200).json({
+      data: result
+    })
   } catch (error) {
     console.error(error);
   }
 });
 
 router.post("/change/password", verifyToken, async (req, res, next) => {
-  const id = res.locals.id;
-  console.log("id", id);
+  const email = res.locals.email;
+  console.log("email", email);
+  const body = req.body;
+  console.log("body", body);
+  const {
+    currentPassword,
+    newPassword
+  } = body
   try {
-    userChangePassword(id);
-  } catch (error) {
+    const result = await user.userInformation(email);
+    const isMatch = await bcrypt.compare(currentPassword, result.password);
+    if (!isMatch) {
+      res.status(401).json({
+        message: "현재 비밀번호가 일치하지 않습니다."
+      })
+    } else {
+      const result = await user.userChangePassword(email, newPassword);
+      if (result) {
+        res.status(200).json({
+          message: "비밀번호 변경이 완료되었습니다."
+        })
+      }
 
+    }
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+router.post("/edit", verifyToken, async (req, res, next) => {
+  const email = res.locals.email;
+  console.log("email", email);
+  console.log("rea.body : ", req.body)
+  const body = req.body;
+  try {
+    await user.userEdit(email, body);
+    res.status(200).json({
+      message: "프로필 수정이 완료되었습니다."
+    })
+  } catch (error) {
+    console.error(error)
   }
 })
 
