@@ -124,9 +124,14 @@ router.post("/change/password", verifyToken, async (req, res, next) => {
   try {
     const result = await user.userInformation(email);
     const isMatch = await bcrypt.compare(currentPassword, result.password);
+    const isMach2 = await bcrypt.compare(newPassword, result.password);
     if (!isMatch) {
       res.status(401).json({
         message: "현재 비밀번호가 일치하지 않습니다."
+      })
+    } else if (isMach2) {
+      res.status(401).json({
+        message: "등록된 비밀번호와 변경하고자 하는 비밀번호가 같습니다."
       })
     } else {
       const result = await user.userChangePassword(email, newPassword);
@@ -135,7 +140,6 @@ router.post("/change/password", verifyToken, async (req, res, next) => {
           message: "비밀번호 변경이 완료되었습니다."
         })
       }
-
     }
   } catch (error) {
     console.error(error)

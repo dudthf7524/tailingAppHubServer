@@ -47,26 +47,31 @@ router.get("/detail", async (req, res) => {
     }
 })
 
-router.post("/edit", async (req,res) => {
+router.post("/edit", async (req, res) => {
     const body = req.body;
-    try{
+    try {
         const result = await pet.petEdit(body);
-        if(result){
+        if (result) {
             res.status(200).json({
-                message:"환자 수정이 완료되었습니다."
+                message: "환자 수정이 완료되었습니다."
             })
         }
-    }catch(error){
+    } catch (error) {
         console.error(error);
     }
 })
 
-router.post("/delete", async (req,res) =>{
+router.post("/delete", async (req, res) => {
     console.log("req.body", req.body);
     const petId = req.body.id;
-    try{
+    try {
         const result = await pet.petDelete(petId);
-    }catch(error){
+        console.log("result", result)
+        res.status(200).json({
+            message: "환자가 삭제되었습니다."
+        })
+
+    } catch (error) {
         console.error(error);
     }
 })
