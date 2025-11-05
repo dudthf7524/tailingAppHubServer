@@ -103,14 +103,18 @@ router.get("/connect/device/list", verifyToken, async (req, res) => {
 });
 router.post("/edit/device/address", async (req, res) => {
     console.log("req.body : ", req.body);
-    // try {
-    //     const result = await pet.petConnectDeviceList(email);
-    //     res.status(200).json({
-    //         data: result
-    //     })
-    // } catch (error) {
-    //     console.error(error);
-    // }
+    const body = req.body;
+    const {pet_id, address} = body
+    try {
+        const result1 = await pet.petWithDeviceFindOne(address);
+        const result2 = await pet.petEditNullDeviceAddress(result1);
+        const result3 = await pet.petEditDeviceAddress(pet_id, address);
+        res.status(200).json({
+            message : "변경되었습니다."
+        })
+    } catch (error) {
+        console.error(error);
+    }
 });
 
 module.exports = router;

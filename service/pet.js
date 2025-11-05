@@ -149,6 +149,46 @@ const petConnectDeviceList = async (email) => {
 }
 
 
+const petEditDeviceAddress = async (id, address) => {
+    try {
+        const result = await Pet.update(
+            {
+                device_address : address
+            },
+            { where: { id } }
+        );
+        return result;
+    } catch (error) {
+        console.error(error)
+    }
+}
+
+const petWithDeviceFindOne = async (address) => {
+
+    try {
+        const result = await Pet.findOne({ where: { device_address: address } });
+        return result.id;
+        return result;
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+
+const petEditNullDeviceAddress = async (id) => {
+   
+    try {
+        const result = await Pet.update(
+            {
+                device_address : null
+            },
+            { where: { id } }
+        );
+        return result;
+    } catch (error) {
+        console.error(error)
+    }
+}
 module.exports = {
     petList,
     petRegister,
@@ -156,5 +196,8 @@ module.exports = {
     petEdit,
     petDelete,
     petConnectDevice,
-    petConnectDeviceList
+    petConnectDeviceList,
+    petEditDeviceAddress,
+    petWithDeviceFindOne,
+    petEditNullDeviceAddress
 };

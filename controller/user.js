@@ -18,12 +18,12 @@ router.post("/join", async (req, res, next) => {
     } = req.body;
     const exUser = await User.findOne({ where: { email } });
     if (exUser) {
-      return res.status(400).json({ message: "이미 가입된 아이디입니다." });
+      res.status(202).json({ message: "해당 이메일은 이미 가입된 이메일입니다. 다른 이메일을 사용해 주세요." });
     }
     const body = req.body;
     const result = await user.userJoin(body);
 
-    res.status(201).json({
+    res.status(200).json({
       message: "회원가입이 완료되었습니다.",
       data: {
         user: {
