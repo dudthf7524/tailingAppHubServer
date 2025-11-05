@@ -75,4 +75,42 @@ router.post("/delete", async (req, res) => {
         console.error(error);
     }
 })
+
+router.get("/connect/device", verifyToken, async (req, res) => {
+    const email = res.locals.email;
+    try {
+        const result = await pet.petConnectDevice(email);
+        console.log("result", result)
+        res.status(200).json({
+            data: result
+        })
+
+    } catch (error) {
+        console.error(error);
+    }
+})
+
+router.get("/connect/device/list", verifyToken, async (req, res) => {
+    const email = res.locals.email;
+    try {
+        const result = await pet.petConnectDeviceList(email);
+        res.status(200).json({
+            data: result
+        })
+    } catch (error) {
+        console.error(error);
+    }
+});
+router.post("/edit/device/address", async (req, res) => {
+    console.log("req.body : ", req.body);
+    // try {
+    //     const result = await pet.petConnectDeviceList(email);
+    //     res.status(200).json({
+    //         data: result
+    //     })
+    // } catch (error) {
+    //     console.error(error);
+    // }
+});
+
 module.exports = router;

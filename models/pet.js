@@ -57,6 +57,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
+            device_address: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            }
         },
         {
             charset: "utf8mb4",
@@ -65,7 +69,7 @@ module.exports = (sequelize, DataTypes) => {
     );
     Pet.associate = (db) => {
         db.Pet.belongsTo(db.User, { foreignKey: "user_email" });
-        db.Pet.hasOne(db.Device, { foreignKey: "pet_id" });
+        db.Pet.belongsTo(db.Device, { foreignKey: "device_address" });
     };
 
     return Pet;

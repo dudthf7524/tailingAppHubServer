@@ -38,9 +38,9 @@ const deviceConnectPet = async (body) => {
     } = body;
     console.log(deviceAddress, petId)
     try {
-        await Device.update(
-            { pet_id: petId },
-            { where: { address: deviceAddress } }
+        await Pet.update(
+            { device_address: deviceAddress },
+            { where: { id: petId } }
         );
     } catch (error) {
         console.error(error);

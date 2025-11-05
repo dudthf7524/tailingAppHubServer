@@ -1,4 +1,4 @@
-const { Pet } = require("../models");
+const { Pet, Device } = require("../models");
 
 
 const petRegister = async (email, body) => {
@@ -31,6 +31,7 @@ const petRegister = async (email, body) => {
             diagnosis,
             medicalHistory,
             user_email: email
+
         });
         return result.id;
     } catch (error) {
@@ -103,17 +104,57 @@ const petEdit = async (body) => {
 
 const petDelete = async (petId) => {
     console.log("petId", petId);
-    try{
-         await Pet.destroy({ where: { id : petId } });
-    }catch(error){
+    try {
+        await Pet.destroy({ where: { id: petId } });
+    } catch (error) {
         console.error(error);
     }
 }
+
+const petConnectDevice = async (email) => {
+    const result = await Device.findAll({
+        attributes: [
+            'address',
+            ['name', 'device_name']
+        ],
+        include: [{
+            model: Pet,
+            attributes: [
+                ['id', 'pet_id'],
+                ['name', 'pet_name'],
+                'breed'
+            ],
+            required: true,
+            where: {
+                user_email: email  // Pet 테이블의 user_id로 필터링
+            }
+        }],
+    });
+    console.log("result : ", result)
+    return result;
+}
+
+const petConnectDeviceList = async (email) => {
+    try {
+        const result = await Pet.findAll({
+            where: {
+                user_email: email,
+                device_address: null,
+            },
+        })
+        return result
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 
 module.exports = {
     petList,
     petRegister,
     petDetail,
     petEdit,
-    petDelete
+    petDelete,
+    petConnectDevice,
+    petConnectDeviceList
 };
