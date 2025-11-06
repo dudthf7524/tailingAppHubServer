@@ -73,7 +73,6 @@ const findByUserEmail = async (email) => {
 };
 
 const userEdit = async (email, body) => {
-    console.log("body", body);
 
     const {
         name,

@@ -15,7 +15,6 @@ router.post("/refreshToken", verifyRefreshToken, async (req, res, next) => {
         { expiresIn: "5s" }
     );
     const result = await user.findByUserEmail(res.locals.email);
-    console.log(result)
     if (result) {
         const email = result.email
         return res.json({
@@ -26,10 +25,6 @@ router.post("/refreshToken", verifyRefreshToken, async (req, res, next) => {
         });
 
     }
-    // if (!users[res.locals.email]) {
-    //     return res.status(404).json({ message: "가입되지 않은 회원입니다." });
-    // }
-
 });
 
 module.exports = router;

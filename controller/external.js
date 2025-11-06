@@ -9,19 +9,7 @@ const deviceSessions = new Map();
 const SESSION_TIMEOUT = 60000; // 60초 동안 데이터 없으면 세션 종료
 
 router.post("/device", async (req, res) => {
-    console.log("디바이스 데이터 : ", req.body);
     const now = new Date();
-    const today = now.toLocaleString("ko-KR", {
-        timeZone: "Asia/Seoul",
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false
-    }) + "." + now.getMilliseconds().toString().padStart(3, "0");
-    // console.log("통신시간 : ", today)
 
     // 디바이스 데이터 파싱 및 CSV 저장
     try {
@@ -119,12 +107,7 @@ router.post("/device", async (req, res) => {
 
         // 웹소켓으로 모든 디바이스 데이터 브로드캐스트
         const wsStats = broadcastDeviceData(devicesData);
-
-        // console.log(`데이터가 저장되었습니다: ${devicesArray.length}개 디바이스`);
-        // console.log("처리시간 : ", today)
-        // console.log(`디바이스 수: ${devicesArray.length}개`)
-        // console.log(`CSV 저장 시간: ${saveTime}ms`)
-        // console.log(`WebSocket 전송: success=${wsStats.success}, fail=${wsStats.fail}, total=${wsStats.total}`)
+ 
         res.send("ok");
     } catch (error) {
         console.error("CSV 저장 중 오류:", error);

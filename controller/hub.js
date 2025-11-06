@@ -17,7 +17,6 @@ router.get("/list", verifyToken, async (req, res, next) => {
 
 router.post("/edit", verifyToken, async (req, res, next) => {
    
-    console.log("req.body", req.body)
     const body = req.body;
     try {
         await hub.hubEdit(body);

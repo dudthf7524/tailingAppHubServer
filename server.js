@@ -7,7 +7,6 @@ const { Server: WebSocketServer } = require("ws");
 require("dotenv").config();
 
 const db = require("./models/index.js");
-const { MacAddress } = require("./models");
 const userController = require("./controller/user.js");
 const hubController = require("./controller/hub.js");
 const deviceController = require("./controller/device.js");

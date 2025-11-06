@@ -54,7 +54,6 @@ const petDetail = async (petId) => {
 
     try {
         const result = await Pet.findOne({ where: { id: petId } });
-        console.log("result", result);
         return result;
     } catch (error) {
         console.error(error);
@@ -62,8 +61,6 @@ const petDetail = async (petId) => {
 }
 
 const petEdit = async (body) => {
-    console.log("body", body);
-
     const {
         id,
         name,
@@ -103,7 +100,6 @@ const petEdit = async (body) => {
 }
 
 const petDelete = async (petId) => {
-    console.log("petId", petId);
     try {
         await Pet.destroy({ where: { id: petId } });
     } catch (error) {
@@ -130,7 +126,6 @@ const petConnectDevice = async (email) => {
             }
         }],
     });
-    console.log("result : ", result)
     return result;
 }
 

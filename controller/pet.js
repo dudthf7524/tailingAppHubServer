@@ -33,10 +33,8 @@ router.post("/register", verifyToken, async (req, res) => {
 
 router.get("/detail", async (req, res) => {
     const petId = req.query.id;
-    console.log(petId)
     try {
         const result = await pet.petDetail(petId)
-        console.log(result)
         if (result) {
             res.status(200).json({
                 data: result
@@ -62,11 +60,9 @@ router.post("/edit", async (req, res) => {
 })
 
 router.post("/delete", async (req, res) => {
-    console.log("req.body", req.body);
     const petId = req.body.id;
     try {
-        const result = await pet.petDelete(petId);
-        console.log("result", result)
+        await pet.petDelete(petId);
         res.status(200).json({
             message: "환자가 삭제되었습니다."
         })
@@ -80,7 +76,6 @@ router.get("/connect/device", verifyToken, async (req, res) => {
     const email = res.locals.email;
     try {
         const result = await pet.petConnectDevice(email);
-        console.log("result", result)
         res.status(200).json({
             data: result
         })
@@ -102,13 +97,12 @@ router.get("/connect/device/list", verifyToken, async (req, res) => {
     }
 });
 router.post("/edit/device/address", async (req, res) => {
-    console.log("req.body : ", req.body);
     const body = req.body;
     const {pet_id, address} = body
     try {
         const result1 = await pet.petWithDeviceFindOne(address);
-        const result2 = await pet.petEditNullDeviceAddress(result1);
-        const result3 = await pet.petEditDeviceAddress(pet_id, address);
+        await pet.petEditNullDeviceAddress(result1);
+        await pet.petEditDeviceAddress(pet_id, address);
         res.status(200).json({
             message : "변경되었습니다."
         })

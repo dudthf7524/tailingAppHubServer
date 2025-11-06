@@ -11,7 +11,6 @@ const verifyToken = require('../middlewares/verifyToken');
 dotenv.config();
 
 router.post("/join", async (req, res, next) => {
-  console.log("들어온 데이터", req.body);
   try {
     const {
       email,
@@ -43,19 +42,13 @@ router.post("/email/send", async (req, res, next) => {
   const { email, emailCode } = req.body;
   try {
     const result = await commonEmail.sendEmail(email, emailCode)
-    console.log("result", result)
     res.json(true);
   } catch (error) {
     console.error(error)
   }
 });
 
-// router.post("/join", async (req, res) => {
-//     console.log("프론트 에서 받아온 데이터", req.body)
-// })
-
 router.post("/login", async (req, res, next) => {
-  console.log("req.body", req.body)
   try {
     const { email, password } = req.body;
     const exUser = await user.userLogin(email);
@@ -114,9 +107,7 @@ router.get("/information", verifyToken, async (req, res, next) => {
 
 router.post("/change/password", verifyToken, async (req, res, next) => {
   const email = res.locals.email;
-  console.log("email", email);
   const body = req.body;
-  console.log("body", body);
   const {
     currentPassword,
     newPassword
@@ -148,8 +139,6 @@ router.post("/change/password", verifyToken, async (req, res, next) => {
 
 router.post("/edit", verifyToken, async (req, res, next) => {
   const email = res.locals.email;
-  console.log("email", email);
-  console.log("rea.body : ", req.body)
   const body = req.body;
   try {
     await user.userEdit(email, body);

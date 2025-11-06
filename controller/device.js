@@ -32,8 +32,6 @@ router.post("/register", async (req, res) => {
 
 router.post("/connect/pet", async (req, res) => {
     const body = req.body;
-    console.log("req.body", req.body);
-
     try {
         await device.deviceConnectPet(body);
         res.status(200).json({
@@ -71,7 +69,6 @@ router.get("/list/name", verifyToken, async (req, res) => {
 
 router.post("/edit", verifyToken, async (req, res) => {
     const body = req.body;
-    console.log("body : ", body)
     try {
         const result = await device.deviceEdit(body);
         return res.status(200).json({

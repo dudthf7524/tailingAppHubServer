@@ -17,7 +17,6 @@ const deviceRegister = async (body) => {
         address,
         hubAddress
     } = body;
-    console.log(name, address, hubAddress)
     try {
         const result = await Device.create({
             name,
@@ -31,12 +30,10 @@ const deviceRegister = async (body) => {
 };
 
 const deviceConnectPet = async (body) => {
-    console.log(body);
     const {
         deviceAddress,
         petId,
     } = body;
-    console.log(deviceAddress, petId)
     try {
         await Pet.update(
             { device_address: deviceAddress },
@@ -68,7 +65,6 @@ const deviceConnectPetList = async (email) => {
             }],
 
         });
-        console.log("result : ", result)
         return result;
     } catch (error) {
         console.error(error);
@@ -87,7 +83,6 @@ const deviceListName = async (email) => {
             }],
             raw: true,   
         });
-        console.log("result : ", result)
         return result;
     } catch (err) {
         console.error(err);

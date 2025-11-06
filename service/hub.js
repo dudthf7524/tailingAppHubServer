@@ -12,8 +12,6 @@ const hubList = async (email) => {
 };
 
 const hubEdit = async (body) => {
-    console.log("body", body);
-
     const {
         address,
         name
