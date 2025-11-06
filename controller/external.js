@@ -4,8 +4,12 @@ const path = require("path");
 const fs = require("fs");
 const { broadcastDeviceData } = require("../websocket/broadcaster");
 
+// 디바이스별 활성 파일명과 마지막 데이터 수신 시간을 저장
+const deviceSessions = new Map();
+const SESSION_TIMEOUT = 60000; // 60초 동안 데이터 없으면 세션 종료
+
 router.post("/device", async (req, res) => {
-    // console.log("디바이스 데이터 : ", req.body);
+    console.log("디바이스 데이터 : ", req.body);
     const now = new Date();
     const today = now.toLocaleString("ko-KR", {
         timeZone: "Asia/Seoul",
@@ -43,14 +47,6 @@ router.post("/device", async (req, res) => {
             return res.status(400).send("잘못된 데이터 형식");
         }
 
-        const fileDate = now.toLocaleString("ko-KR", {
-            timeZone: "Asia/Seoul",
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour12: false
-        }).replace(/\. /g, '-').replace(/\./g, '');
-
         // CSV 파일 저장 시작 시간
         const saveStartTime = Date.now();
 
@@ -59,9 +55,38 @@ router.post("/device", async (req, res) => {
         for (const device of devicesArray) {
             const { deviceAddress, deviceData } = device;
 
-            // 파일명 생성 (디바이스주소_날짜.csv)
             const deviceName = deviceAddress.replace(/:/g, '-');
-            const fileName = `${deviceName}_${fileDate}.csv`;
+            const currentTime = Date.now();
+
+            // 디바이스 세션 확인
+            let session = deviceSessions.get(deviceAddress);
+
+            // 세션이 없거나 타임아웃된 경우 새 세션 시작
+            if (!session || (currentTime - session.lastUpdate > SESSION_TIMEOUT)) {
+                const fileDate = now.toLocaleString("ko-KR", {
+                    timeZone: "Asia/Seoul",
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                }).replace(/\. /g, '-').replace(/\./g, '').replace(/:/g, '-');
+
+                const fileName = `${deviceName}_${fileDate}.csv`;
+                session = {
+                    fileName: fileName,
+                    lastUpdate: currentTime
+                };
+                deviceSessions.set(deviceAddress, session);
+            } else {
+                // 기존 세션 업데이트
+                session.lastUpdate = currentTime;
+            }
+
+            // 파일명 생성 (디바이스주소_날짜시분초.csv)
+            const fileName = session.fileName;
             const filePath = path.join(dataDir, fileName);
 
             // 파일이 존재하는지 확인
